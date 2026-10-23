@@ -1,0 +1,11 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "singleQuote": true,
+  "printWidth": 140,
+  "tabWidth": 2,
+  "semi": true,
+  "trailingComma": "all",
+  "arrowParens": "always",
+  "endOfLine": "lf",
+  "ignorePatterns": ["**/dist/**", "**/.turbo/**", "**/CHANGELOG.md", "pnpm-lock.yaml"]
+}

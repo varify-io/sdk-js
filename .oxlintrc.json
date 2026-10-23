@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "style": "off"
+  },
+  "rules": {
+    "eslint/no-unused-vars": "error",
+    "eslint/no-shadow": "warn",
+    "eslint/no-param-reassign": "warn",
+    "eslint/no-nested-ternary": "warn"
+  },
+  "plugins": ["eslint", "oxc", "typescript", "unicorn", "import", "vitest"],
+  "ignorePatterns": ["**/dist/**", "**/.turbo/**"]
+}
