@@ -29,6 +29,7 @@ export interface TrackingPayload {
 export type AssignmentSource = 'forced' | 'stored' | 'hash' | 'fallback';
 
 export interface Assignment {
+  experimentId: number;
   /** `null` is the original. */
   variation: number | null;
   /** `null` means do not track. */

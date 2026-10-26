@@ -131,12 +131,12 @@ describe('evaluate', () => {
 
     expect(result.state).toEqual(state);
     expect(result.changed).toBe(false);
-    expect(getAssignment(result, 48812)).toEqual({ variation: null, tracking: null, source: 'fallback' });
+    expect(getAssignment(result, 48812)).toEqual({ experimentId: 48812, variation: null, tracking: null, source: 'fallback' });
   });
 
   it('returns the original without tracking for an unknown experiment', () => {
     const result = evaluate(configWith(experiment()), { uid: UID, assignments: {} });
 
-    expect(getAssignment(result, 12345)).toEqual({ variation: null, tracking: null, source: 'fallback' });
+    expect(getAssignment(result, 12345)).toEqual({ experimentId: 12345, variation: null, tracking: null, source: 'fallback' });
   });
 });

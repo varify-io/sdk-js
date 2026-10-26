@@ -11,7 +11,13 @@ interface Resolution {
   source: AssignmentSource;
 }
 
-const FALLBACK: Assignment = { variation: null, tracking: null, source: 'fallback' };
+/** The original without tracking: for an unknown experiment, a failed config load, or a visitor without an id. */
+export const fallbackAssignment = (experimentId: number): Assignment => ({
+  experimentId,
+  variation: null,
+  tracking: null,
+  source: 'fallback',
+});
 
 const pickByBucket = (variations: ConfigVariation[], position: number): ConfigVariation | undefined => {
   let remaining = position;
@@ -87,6 +93,7 @@ export const evaluate = (config: Config | null, state: State | undefined, option
 
     stored[experiment.id] = variationId;
     assignments.set(experiment.id, {
+      experimentId: experiment.id,
       variation: variationId,
       tracking: experiment.tracking_enabled
         ? { experiment: { id: experiment.id, name: experiment.slug }, variation: { id: variationId, name: variation?.slug ?? null } }
@@ -100,4 +107,4 @@ export const evaluate = (config: Config | null, state: State | undefined, option
 };
 
 export const getAssignment = (evaluation: Evaluation, experimentId: number): Assignment =>
-  evaluation.assignments.get(experimentId) ?? FALLBACK;
+  evaluation.assignments.get(experimentId) ?? fallbackAssignment(experimentId);
