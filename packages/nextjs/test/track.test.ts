@@ -53,11 +53,11 @@ describe('trackExposure', () => {
     expect(host.varify?.['serverSideQueue']).toEqual([PAYLOAD]);
   });
 
-  it('tracks a different variation of the same experiment separately', () => {
+  it('keeps the first variation when one page shows two variations of an experiment', () => {
     trackExposure(PAYLOAD);
     trackExposure(ORIGINAL);
 
-    expect(host.varify?.['serverSideQueue']).toEqual([PAYLOAD, ORIGINAL]);
+    expect(host.varify?.['serverSideQueue']).toEqual([PAYLOAD]);
   });
 
   it('tracks again after navigating to another pathname', () => {

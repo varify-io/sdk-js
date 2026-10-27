@@ -6,12 +6,13 @@ interface VarifyGlobal {
 }
 
 let exposedPathname: string | undefined;
-const exposed = new Set<string>();
+const exposed = new Set<number>();
 
 /**
  * Hands an exposure to varify.js, which applies consent. varify.js tracks every call (it only deduplicates with the
  * team's dataSaveMode), so several instances of one experiment and StrictMode's double effects are dropped here:
- * once per experiment and variation per pathname.
+ * once per experiment per pathname. The first variation wins, so a page that shows two variations of one experiment
+ * (after forcing, or a cached page restored on back navigation) never counts the visitor in both.
  * Before varify.js has loaded, the exposure waits in `window.varify.serverSideQueue`, which varify.js drains on load.
  */
 export const trackExposure = (payload: TrackingPayload): void => {
@@ -22,11 +23,10 @@ export const trackExposure = (payload: TrackingPayload): void => {
     exposed.clear();
   }
 
-  const key = `${payload.experiment.id}:${payload.variation.id ?? 0}`;
-  if (exposed.has(key)) {
+  if (exposed.has(payload.experiment.id)) {
     return;
   }
-  exposed.add(key);
+  exposed.add(payload.experiment.id);
 
   host.varify ??= {};
 
