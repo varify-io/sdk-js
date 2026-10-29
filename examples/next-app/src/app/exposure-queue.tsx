@@ -8,8 +8,7 @@ export const ExposureQueue = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const host = window as typeof window & { varify?: { serverSideQueue?: unknown[] } };
-      setQueue(JSON.stringify(host.varify?.serverSideQueue ?? [], null, 2));
+      setQueue(JSON.stringify(window.varify?.serverSideQueue ?? [], null, 2));
     }, 500);
     return () => clearInterval(interval);
   }, []);

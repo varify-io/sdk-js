@@ -9,8 +9,17 @@
     "eslint/no-unused-vars": "error",
     "eslint/no-shadow": "warn",
     "eslint/no-param-reassign": "warn",
-    "eslint/no-nested-ternary": "warn"
+    "eslint/no-nested-ternary": "warn",
+    "typescript/consistent-type-assertions": ["error", { "assertionStyle": "never" }]
   },
+  "overrides": [
+    {
+      "files": ["**/test/**"],
+      "rules": {
+        "typescript/consistent-type-assertions": "off"
+      }
+    }
+  ],
   "plugins": ["eslint", "oxc", "typescript", "unicorn", "import", "vitest"],
   "ignorePatterns": ["**/dist/**", "**/.turbo/**"]
 }

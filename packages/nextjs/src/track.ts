@@ -16,7 +16,7 @@ const exposed = new Set<number>();
  * Before varify.js has loaded, the exposure waits in `window.varify.serverSideQueue`, which varify.js drains on load.
  */
 export const trackExposure = (payload: TrackingPayload): void => {
-  const host = globalThis as typeof globalThis & { varify?: VarifyGlobal };
+  const host: { location?: Location; varify?: VarifyGlobal } = globalThis;
   const pathname = host.location?.pathname;
   if (pathname !== exposedPathname) {
     exposedPathname = pathname;
