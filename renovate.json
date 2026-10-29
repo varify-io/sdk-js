@@ -1,0 +1,36 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "assignAutomerge": true,
+  "minimumReleaseAge": "5 days",
+  "pinDigests": true,
+  "extends": [":prConcurrentLimit10", "customManagers:gitlabPipelineVersions"],
+  "rebaseWhen": "conflicted",
+  "packageRules": [
+    {
+      "description": "Published packages keep ranges so consumers can dedupe; only tooling is pinned",
+      "matchDepTypes": ["devDependencies"],
+      "rangeStrategy": "pin"
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "matchUpdateTypes": ["pinDigest"],
+      "groupName": "container image digests"
+    },
+    {
+      "groupName": "commitlint",
+      "matchPackageNames": ["/^@?commitlint/"]
+    },
+    {
+      "groupName": "node",
+      "matchPackageNames": ["node", "nodejs"]
+    },
+    {
+      "groupName": "npm dependencies",
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["minor", "patch"]
+    }
+  ]
+}

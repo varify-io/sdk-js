@@ -1,0 +1,103 @@
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH
+
+stages:
+  - prepare
+  - test
+
+variables:
+  # renovate: datasource=docker depName=ghcr.io/aquasecurity/trivy
+  TRIVY_VERSION: 0.74.0
+  # renovate: datasource=docker depName=ghcr.io/betterleaks/betterleaks
+  BETTERLEAKS_VERSION: 1.8.1
+  pnpm_config_store_dir: '$CI_PROJECT_DIR/.pnpm-store'
+
+default:
+  interruptible: true
+  image: public.ecr.aws/docker/library/node:24.20.0-alpine3.24
+  before_script:
+    - corepack enable pnpm
+    - pnpm install --offline --frozen-lockfile
+
+.node-cache: &node-cache
+  key:
+    files:
+      - pnpm-lock.yaml
+  paths:
+    - .pnpm-store
+  policy: pull
+
+prepare:node:
+  stage: prepare
+  cache:
+    <<: *node-cache
+    policy: pull-push
+  before_script:
+    - corepack enable pnpm
+  script:
+    - pnpm fetch
+
+test:lint:
+  stage: test
+  cache: *node-cache
+  script:
+    - pnpm lint
+
+test:typecheck:
+  stage: test
+  cache: *node-cache
+  script:
+    - pnpm typecheck
+
+test:unit:
+  stage: test
+  cache: *node-cache
+  script:
+    - pnpm test
+
+test:package:
+  stage: test
+  cache: *node-cache
+  script:
+    - pnpm check:package
+
+test:audit:
+  stage: test
+  cache: *node-cache
+  script:
+    - pnpm audit
+
+betterleaks:
+  stage: test
+  image:
+    name: ghcr.io/betterleaks/betterleaks:v$BETTERLEAKS_VERSION
+    entrypoint: ['']
+  needs: []
+  variables:
+    GIT_DEPTH: 0
+  before_script: []
+  script:
+    - betterleaks git . --no-banner -v --redact=100 --log-opts=HEAD
+
+trivy-secrets:
+  stage: test
+  image:
+    name: ghcr.io/aquasecurity/trivy:$TRIVY_VERSION
+    entrypoint: ['']
+  needs: []
+  variables:
+    TRIVY_CACHE_DIR: .tools/cache/trivy
+    TRIVY_NO_PROGRESS: 'true'
+  cache:
+    - key: trivy-db-$TRIVY_VERSION
+      when: always
+      paths:
+        - .tools/cache/trivy/
+  before_script: []
+  script:
+    - trivy filesystem --scanners secret
+      --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+      --secret-config .trivy/secret-config.yaml
+      --table-mode detailed
+      .
