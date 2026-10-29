@@ -34,6 +34,5 @@ If an `AGENTS.local.md` exists, read it too. It is personal and untracked. It ma
 2. Confirm it does what was asked, in the example app where it applies.
 3. Update or add the tests that cover it.
 4. Run `pnpm lint`, `pnpm typecheck`, `pnpm test` and, for packaging changes, `pnpm check:package`.
-5. Add a changeset if a published package changed.
 
 Narrow runs while you work: `pnpm --filter @varify-io/core test`, or `pnpm --filter @varify-io/nextjs exec vitest run test/track.test.ts`.

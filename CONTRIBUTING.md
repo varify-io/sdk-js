@@ -30,7 +30,7 @@ CI also runs betterleaks over the git history and a Trivy secret scan. A merge r
 - No type assertions in `src`. Fix the type at its source, or narrow with a type guard. Tests are exempt.
 - Input from outside the SDK (the config file, cookies, query parameters, a customer's store) is `unknown` until a guard such as `isConfig` or `parseState` has checked it.
 - Exports declare their types explicitly; `isolatedDeclarations` enforces it.
-- Public API changes are breaking changes for customers. Add rather than rename, and record them in a changeset.
+- Public API changes are breaking changes for customers. Add rather than rename.
 - No comments that say what the code does. A comment is for: security reasoning, framework behavior, or an invariant a reader would otherwise "fix" away. Docblocks on public API are fine, since they show up in the editor. Never mention callers, sibling files or ordering, anything an edit elsewhere could make false.
 
 ## Tests
@@ -41,7 +41,7 @@ For anything that runs in the browser or in the proxy, check it in the example a
 
 ## Releases
 
-Every change to a published package needs a changeset (`pnpm changeset`) in the same merge request. Pick the bump from what customers see: `patch` for fixes, `minor` for new API, `major` for anything that breaks existing code. Before 1.0, breaking changes are `minor`.
+Changesets are written when releasing on `main`, not in feature merge requests: `pnpm changeset` there records the bump for every package that changed since the last release. Pick the bump from what customers see: `patch` for fixes, `minor` for new API, `major` for anything that breaks existing code. Before 1.0, breaking changes are `minor`.
 
 ## Branches
 
