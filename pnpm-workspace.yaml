@@ -2,3 +2,5 @@ packages:
   - packages/*
   - examples/*
 engineStrict: true
+patchedDependencies:
+  '@microsoft/api-extractor@7.59.4': patches/@microsoft__api-extractor@7.59.4.patch

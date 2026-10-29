@@ -162,6 +162,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@microsoft/api-extractor@7.59.4': 4b7a49420139387666a1dbe775d069d799de96302e7f8db602ba19d4a0945585
+
 importers:
 
   .:
@@ -180,7 +183,7 @@ importers:
         version: 21.2.4
       '@microsoft/api-extractor':
         specifier: 7.59.4
-        version: 7.59.4(@types/node@24.19.2)
+        version: 7.59.4(patch_hash=4b7a49420139387666a1dbe775d069d799de96302e7f8db602ba19d4a0945585)(@types/node@24.19.2)
       '@types/node':
         specifier: ^24.0.0
         version: 24.19.2
@@ -2765,7 +2768,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@microsoft/api-extractor@7.59.4(@types/node@24.19.2)':
+  '@microsoft/api-extractor@7.59.4(patch_hash=4b7a49420139387666a1dbe775d069d799de96302e7f8db602ba19d4a0945585)(@types/node@24.19.2)':
     dependencies:
       '@microsoft/api-extractor-model': 7.33.15(@types/node@24.19.2)
       '@microsoft/tsdoc': 0.17.1

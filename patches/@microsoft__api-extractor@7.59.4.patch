@@ -1,0 +1,26 @@
+diff --git a/lib-commonjs/collector/SourceMapper.js b/lib-commonjs/collector/SourceMapper.js
+index 7d4e9d30f628b88b7bee69eddd9a3483ce845b7f..e1545a2e4e66f94147bcc193f464f8d34b4a80a7 100644
+--- a/lib-commonjs/collector/SourceMapper.js
++++ b/lib-commonjs/collector/SourceMapper.js
+@@ -145,6 +145,8 @@ class SourceMapper {
+                     const mappingItems = [];
+                     // Extract the list of mapping items
+                     sourceMapConsumer.eachMapping((mappingItem) => {
++                        // Unmapped segments carry no original position; resolving their missing source yields the folder.
++                        if (mappingItem.originalLine == null) return;
+                         mappingItems.push({
+                             ...mappingItem,
+                             // The "source-map" package inexplicably uses 1-based line numbers but 0-based column numbers.
+diff --git a/lib-esm/collector/SourceMapper.js b/lib-esm/collector/SourceMapper.js
+index ddd017650bb892c929567b2025428aa6ef4129e6..5b3dccf7f9c16dcafb0ca950b57635e9f83ec871 100644
+--- a/lib-esm/collector/SourceMapper.js
++++ b/lib-esm/collector/SourceMapper.js
+@@ -109,6 +109,8 @@ export class SourceMapper {
+                     const mappingItems = [];
+                     // Extract the list of mapping items
+                     sourceMapConsumer.eachMapping((mappingItem) => {
++                        // Unmapped segments carry no original position; resolving their missing source yields the folder.
++                        if (mappingItem.originalLine == null) return;
+                         mappingItems.push({
+                             ...mappingItem,
+                             // The "source-map" package inexplicably uses 1-based line numbers but 0-based column numbers.
