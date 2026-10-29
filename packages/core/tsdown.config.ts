@@ -6,4 +6,5 @@ export default defineConfig({
   dts: true,
   platform: 'neutral',
   target: 'es2022',
+  unbundle: true,
 });
