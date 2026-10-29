@@ -144,16 +144,16 @@ Add `?varify-force={experimentId}-{variationId}` to any URL, for example `?varif
 
 `createVarify(options)`:
 
-| Option      | Default                                       | Description                                                                            |
-| ----------- | --------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `teamId`    | required                                      | Your team's public id (not the numeric `iid`)                                          |
-| `timeoutMs` | `300`                                         | How long to wait for the config before showing the original                            |
-| `onError`   | none                                          | Called with a `VarifyError` (`reason`: `timeout`, `network`, `http`, `invalid-config`) |
-| `cookie`    | see below                                     | Name, domain, `sameSite` and lifetime of the cookie                                    |
-| `isBot`     | user-agent check                              | `(request) => boolean`, to replace the bot detection                                   |
-| `debug`     | on outside production                         | Logs each request's assignments and enables `<VarifyDebug>`                            |
-| `configUrl` | `https://delivery.varify.io/ss/{teamId}.json` | Only for testing against another environment                                           |
-| `fetch`     | `globalThis.fetch`                            | Replace the fetch implementation                                                       |
+| Option      | Default                                       | Description                                                                                                                 |
+| ----------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `teamId`    | required                                      | Your team's public id (not the numeric `iid`)                                                                               |
+| `timeoutMs` | `300`                                         | How long to wait for the config before showing the original                                                                 |
+| `onError`   | none                                          | Called with a `VarifyError` (`reason`: `timeout`, `network`, `http`, `invalid-config`)                                      |
+| `cookie`    | see below                                     | Name, domain, `sameSite` and lifetime of the cookie                                                                         |
+| `isBot`     | user-agent check                              | `(request) => boolean`, to replace the bot detection                                                                        |
+| `debug`     | on outside production                         | Logs each request's assignments and enables `<VarifyDebug>`                                                                 |
+| `configUrl` | `https://delivery.varify.io/ss/{teamId}.json` | Load the config from your own cache or mirror instead, see the [core README](../core/README.md#serving-the-config-yourself) |
+| `fetch`     | `globalThis.fetch`                            | Replace the fetch implementation                                                                                            |
 
 ### Cookie options
 

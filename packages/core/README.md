@@ -40,6 +40,59 @@ assignment.tracking; // hand this to window.varify.trackServerSide on the page; 
 | `isConfig(value)`                         | Type guard for the config shape                                                                                                               |
 | `VarifyError`                             | Passed to `onError`, with `reason`: `timeout`, `network`, `http` or `invalid-config`                                                          |
 
+## `createVarifyClient(options)`
+
+| Option      | Type                           | Default                                       | Description                                                                                                                                                                                            |
+| ----------- | ------------------------------ | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `teamId`    | `string`                       | required                                      | The team's public id (the sqid), not the numeric `iid` from the varify.js snippet. Only used to build the default `configUrl`.                                                                         |
+| `configUrl` | `string`                       | `https://delivery.varify.io/ss/{teamId}.json` | Where the config is loaded from. Replaces the whole URL: point it at your own cache or mirror of the file, or at another environment. See [Serving the config yourself](#serving-the-config-yourself). |
+| `timeoutMs` | `number`                       | `300`                                         | How long `loadConfig()` waits before giving up. A timeout counts as a failed load.                                                                                                                     |
+| `fetch`     | `typeof fetch`                 | `globalThis.fetch`                            | Called as `fetch(url, { headers: { accept: 'application/json' }, signal })`. Replace it to add caching or retries, or to stub the network in tests.                                                    |
+| `onError`   | `(error: VarifyError) => void` | none                                          | Called once per failed load. `loadConfig()` never throws; without `onError`, failures are silent.                                                                                                      |
+
+`loadConfig()` fetches on every call and caches nothing, so call it once per request. It resolves to the config, or to `null` when loading failed. `error.reason` says why:
+
+| `reason`         | When                                                                  |
+| ---------------- | --------------------------------------------------------------------- |
+| `timeout`        | No response within `timeoutMs`                                        |
+| `network`        | `fetch` threw                                                         |
+| `http`           | A non-2xx response; the status is in `error.message`                  |
+| `invalid-config` | The body is not JSON, or doesn't have the config's shape (`isConfig`) |
+
+### Serving the config yourself
+
+The config is a static JSON file, so you can sync it into your own cache or CDN and set `configUrl` to that copy. This removes a request to Varify from every page load.
+
+- Serve the file unchanged. Anything that fails `isConfig` counts as a failed load, and every visitor sees the original.
+- Keep the copy fresh. Varify regenerates the file whenever an experiment starts, stops or changes its traffic split, and your copy only shows that after it syncs. A stale copy keeps showing an ended experiment, or holds back a new one.
+- `timeoutMs` and `onError` apply to your URL like to Varify's.
+
+## `evaluate(config, state, options?)`
+
+| Parameter                | Type                 | Description                                                                                                                                                                |
+| ------------------------ | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `config`                 | `Config \| null`     | The result of `loadConfig()`. `null` passes the stored assignments through untouched and assigns nothing.                                                                  |
+| `state`                  | `State \| undefined` | The visitor's stored state, checked with `parseState`. `undefined` makes a new visitor with a new id.                                                                      |
+| `options.force`          | `ForcedVariation`    | From `parseForceParam`. `variationId: null` forces the original. A variation id the experiment doesn't have is ignored, and assignment continues as if nothing was forced. |
+| `options.generateUserId` | `() => string`       | Creates the id for a new visitor. Defaults to `crypto.randomUUID()`. It has to return a UUIDv4, or `parseState` rejects the stored state on the next request.              |
+
+It returns an `Evaluation`:
+
+| Field         | Type                      | Description                                                                                                                         |
+| ------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `state`       | `State`                   | `{ uid, assignments }` to persist. It holds exactly the experiments in the config, so ended experiments drop out.                   |
+| `changed`     | `boolean`                 | Whether `state` differs from what was passed in. Persist only when it is `true`.                                                    |
+| `assignments` | `Map<number, Assignment>` | One per experiment in the config, keyed by experiment id. Read it with `getAssignment`, which falls back to the untracked original. |
+
+An `Assignment`:
+
+| Field          | Type                                           | Description                                                                                                                   |
+| -------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `experimentId` | `number`                                       |                                                                                                                               |
+| `variation`    | `number \| null`                               | The variation id, or `null` for the original                                                                                  |
+| `tracking`     | `TrackingPayload \| null`                      | Pass this to `window.varify.trackServerSide` on the page. `null` when the experiment has tracking disabled, or for a fallback |
+| `source`       | `'forced' \| 'stored' \| 'hash' \| 'fallback'` | How the variation was chosen, for debugging                                                                                   |
+
 ## Assignment rules
 
 In order, for every experiment in the config:
