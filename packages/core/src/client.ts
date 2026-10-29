@@ -51,6 +51,9 @@ export const createVarifyClient = (options: VarifyClientOptions): VarifyClient =
         }
         return body;
       } catch (error) {
+        if (error instanceof SyntaxError) {
+          return fail(new VarifyError('The Varify config is not valid JSON', 'invalid-config', { cause: error }));
+        }
         const isTimeout = error instanceof DOMException && error.name === 'TimeoutError';
         return fail(
           new VarifyError(

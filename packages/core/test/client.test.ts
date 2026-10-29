@@ -32,6 +32,7 @@ describe('createVarifyClient', () => {
   it.each([
     ['an HTTP error', respondWith({}, 404), 'http'],
     ['an unexpected shape', respondWith({ experiments: [{ id: 'x' }] }), 'invalid-config'],
+    ['a body that is not JSON', vi.fn<typeof fetch>(async () => new Response('<html>')), 'invalid-config'],
     [
       'a network error',
       vi.fn<typeof fetch>(async () => {
