@@ -30,6 +30,7 @@ CI also runs betterleaks over the git history and a Trivy secret scan. A merge r
 - No type assertions in `src`. Fix the type at its source, or narrow with a type guard. Tests are exempt.
 - Input from outside the SDK (the config file, cookies, query parameters) is `unknown` until a guard such as `isConfig` or `parseState` has checked it.
 - Exports declare their types explicitly; `isolatedDeclarations` enforces it.
+- Every type that appears in a public signature is exported from that entry point, including types from `@varify-io/core` used by an integration. `pnpm check:package` fails otherwise (api-extractor's `ae-forgotten-export`).
 - Public API changes are breaking changes for customers. Add rather than rename.
 - No comments that say what the code does. A comment is for: security reasoning, framework behavior, or an invariant a reader would otherwise "fix" away. Docblocks on public API are fine, since they show up in the editor. Never mention callers, sibling files or ordering, anything an edit elsewhere could make false.
 

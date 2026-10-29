@@ -31,13 +31,17 @@ export type VarifyExperimentProps = { id: number; children?: ReactNode } & (
   | { original: true; variation?: never }
 );
 
+export interface VarifyProviderProps {
+  children?: ReactNode;
+}
+
 export interface Varify {
   proxy: (request: NextRequest) => Promise<NextResponse>;
   getVariation: (experimentId: number) => Promise<Assignment>;
   /** The id Varify buckets this visitor by, e.g. to store next to your own user id. `null` for bots and routes outside the proxy matcher. */
   getVisitorId: () => Promise<string | null>;
   VarifyExperiment: (props: VarifyExperimentProps) => Promise<ReactNode>;
-  VarifyProvider: (props: { children?: ReactNode }) => Promise<ReactNode>;
+  VarifyProvider: (props: VarifyProviderProps) => Promise<ReactNode>;
   VarifyDebug: () => Promise<ReactNode>;
 }
 
@@ -114,7 +118,7 @@ export const createVarify = (options: CreateVarifyOptions): Varify => {
     );
   };
 
-  const VarifyProvider = async ({ children }: { children?: ReactNode }): Promise<ReactNode> => {
+  const VarifyProvider = async ({ children }: VarifyProviderProps): Promise<ReactNode> => {
     const evaluation = await getEvaluation();
     return <VarifyClientProvider assignments={Object.fromEntries(evaluation?.assignments ?? [])}>{children}</VarifyClientProvider>;
   };

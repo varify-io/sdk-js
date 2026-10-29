@@ -4,3 +4,4 @@ export { useVariation, VarifyClientProvider } from './context';
 export type { VarifyClientProviderProps } from './context';
 export { VarifyTracking } from './tracking';
 export type { VarifyTrackingProps } from './tracking';
+export type { Assignment, AssignmentSource, TrackingPayload } from '@varify-io/core';

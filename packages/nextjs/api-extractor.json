@@ -1,0 +1,6 @@
+{
+  "extends": "../../api-extractor.base.json",
+  "projectFolder": ".",
+  "bundledPackages": ["@varify-io/core"],
+  "mainEntryPointFilePath": "<projectFolder>/dist/index.d.ts"
+}
