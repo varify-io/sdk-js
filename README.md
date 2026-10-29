@@ -7,7 +7,7 @@ JavaScript SDKs for running Varify experiments in the frameworks themselves: ass
 | [`@varify-io/core`](packages/core)     | Framework-agnostic: loads the delivery file, buckets users locally, keeps assignments sticky |
 | [`@varify-io/nextjs`](packages/nextjs) | Next.js App Router: proxy/middleware, `getVariation`, `useVariation`, `<VarifyExperiment>`   |
 
-[`examples/next-app`](examples/next-app) uses both against a real delivery file.
+[`examples/next-app`](examples/next-app) uses both against a real delivery file. The package READMEs are the user documentation.
 
 ## Setup
 
@@ -42,8 +42,4 @@ pnpm --filter next-app dev   # http://localhost:3100
 
 ## Contributing
 
-- Branch off `develop` and merge back through an MR; `main` is the release branch.
-- Commits follow Conventional Commits, enforced by commitlint (types in `commitlint.config.cjs`).
-- A change that affects a published package needs a changeset: `pnpm changeset`.
-
-CI runs lint, typecheck, tests, the package check, `pnpm audit`, and secret scans (betterleaks over the git history, Trivy over the files). An MR can only merge when the pipeline passes.
+Branches, commits, releases and code rules: [CONTRIBUTING.md](CONTRIBUTING.md). How a request flows through the SDK: [.docs/ARCHITECTURE.md](.docs/ARCHITECTURE.md).
