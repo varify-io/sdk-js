@@ -4,7 +4,8 @@
   "description": "Varify server-side A/B testing for Next.js App Router.",
   "license": "UNLICENSED",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "type": "module",
   "sideEffects": false,
@@ -27,7 +28,7 @@
     "build": "tsdown",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json",
-    "check:package": "publint && attw --pack . --profile esm-only"
+    "check:package": "publint && attw --pack . --profile esm-only && api-extractor run --local && api-extractor run --local -c api-extractor.client.json"
   },
   "dependencies": {
     "@varify-io/core": "workspace:*"

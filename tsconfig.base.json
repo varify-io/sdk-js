@@ -12,6 +12,7 @@
     "verbatimModuleSyntax": true,
     "isolatedDeclarations": true,
     "declaration": true,
+    "declarationMap": true,
     "skipLibCheck": true,
     "noEmit": true
   }

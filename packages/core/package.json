@@ -4,7 +4,8 @@
   "description": "Framework-agnostic core of the Varify server-side SDK: local evaluation, sticky assignments, config loading.",
   "license": "UNLICENSED",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "type": "module",
   "sideEffects": false,
@@ -28,7 +29,7 @@
     "build": "tsdown",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json",
-    "check:package": "publint && attw --pack ."
+    "check:package": "publint && attw --pack . && api-extractor run --local"
   },
   "engines": {
     "node": ">=20"
