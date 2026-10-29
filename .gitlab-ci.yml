@@ -12,6 +12,8 @@ variables:
   # renovate: datasource=docker depName=ghcr.io/betterleaks/betterleaks
   BETTERLEAKS_VERSION: 1.8.1
   pnpm_config_store_dir: '$CI_PROJECT_DIR/.pnpm-store'
+  # Holds the registry metadata pnpm's supply-chain check needs for an offline install.
+  pnpm_config_cache_dir: '$CI_PROJECT_DIR/.pnpm-cache'
 
 default:
   interruptible: true
@@ -26,6 +28,7 @@ default:
       - pnpm-lock.yaml
   paths:
     - .pnpm-store
+    - .pnpm-cache
   policy: pull
 
 prepare:node:
