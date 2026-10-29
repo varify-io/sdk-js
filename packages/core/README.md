@@ -28,17 +28,17 @@ assignment.tracking; // hand this to window.varify.trackServerSide on the page; 
 
 ## API
 
-| Export                                    | Description                                                                                             |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `createVarifyClient(options)`             | Returns `{ loadConfig }`. Options: `teamId`, `timeoutMs` (300), `onError`, `configUrl`, `fetch`         |
-| `evaluate(config, state, options?)`       | Assigns every experiment; returns `{ state, changed, assignments }`. Options: `force`, `generateUserId` |
-| `getAssignment(evaluation, experimentId)` | The assignment, or the untracked original for an unknown experiment                                     |
-| `fallbackAssignment(experimentId)`        | The untracked original, for when there is no evaluation (no visitor id, no config)                      |
-| `parseState(value)`                       | Validates stored state from an untrusted source                                                         |
-| `parseForceParam(value)`, `FORCE_PARAM`   | Parses `varify-force={experimentId}-{variationId}`; variation `0` is the original                       |
-| `bucket(experimentId, userId)`            | The visitor's position in an experiment, `0 ≤ bucket < 100`                                             |
-| `isConfig(value)`                         | Type guard for the config shape                                                                         |
-| `VarifyError`                             | Passed to `onError`, with `reason`: `timeout`, `network`, `http` or `invalid-config`                    |
+| Export                                    | Description                                                                                                                                   |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `createVarifyClient(options)`             | Returns `{ loadConfig }`. Options: `teamId` (the team's public id, not the numeric `iid`), `timeoutMs` (300), `onError`, `configUrl`, `fetch` |
+| `evaluate(config, state, options?)`       | Assigns every experiment; returns `{ state, changed, assignments }`. Options: `force`, `generateUserId`                                       |
+| `getAssignment(evaluation, experimentId)` | The assignment, or the untracked original for an unknown experiment                                                                           |
+| `fallbackAssignment(experimentId)`        | The untracked original, for when there is no evaluation (no visitor id, no config)                                                            |
+| `parseState(value)`                       | Validates stored state from an untrusted source                                                                                               |
+| `parseForceParam(value)`, `FORCE_PARAM`   | Parses `varify-force={experimentId}-{variationId}`; variation `0` is the original                                                             |
+| `bucket(experimentId, userId)`            | The visitor's position in an experiment, `0 ≤ bucket < 100`                                                                                   |
+| `isConfig(value)`                         | Type guard for the config shape                                                                                                               |
+| `VarifyError`                             | Passed to `onError`, with `reason`: `timeout`, `network`, `http` or `invalid-config`                                                          |
 
 ## Assignment rules
 

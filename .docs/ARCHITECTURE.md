@@ -20,7 +20,7 @@ browser ──▶ proxy ──▶ Server Components ──▶ HTML + tracking ef
        set cookie
 ```
 
-1. **The proxy** (Next.js `proxy.ts` / `middleware.ts`) reads the `varify` cookie, applies `?varify-force`, and evaluates every experiment in the config. If the state changed, it writes the cookie on the response and on the forwarded request, so rendering in the same request already sees it. It also sends `cache-control: private, no-store`, because a cached response would hand one visitor's id to everyone. Bots and non-cookie stores skip this step.
+1. **The proxy** (Next.js `proxy.ts` / `middleware.ts`) reads the `varify` cookie, applies `?varify-force`, and evaluates every experiment in the config. If the state changed, it writes the cookie on the response and on the forwarded request, so rendering in the same request already sees it. It also sends `cache-control: private, no-store`, because a cached response would hand one visitor's id to everyone. Bots skip this step.
 2. **Rendering** evaluates again from that cookie, once per request (`React.cache`). It never generates an id itself: without a cookie (a bot, or a route outside the matcher) it falls back to the untracked original, because a fresh id per request would assign the visitor anew on every page.
 3. **Tracking** happens in the browser. `<VarifyExperiment>`, `<VarifyTracking>` and `useVariation` report the exposure from an effect, at most once per experiment per pathname (the first variation wins). They call `window.varify.trackServerSide`, or queue in `window.varify.serverSideQueue` until varify.js loads and drains it. varify.js applies consent and the team's dataSaveMode, then sends the exposure to the tracking provider.
 

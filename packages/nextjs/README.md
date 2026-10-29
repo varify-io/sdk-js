@@ -24,8 +24,10 @@ import { createVarify } from '@varify-io/nextjs';
 
 export const varify = createVarify({ teamId: 'your-team-id' });
 
-export const { getVariation, VarifyExperiment, VarifyProvider, VarifyDebug } = varify;
+export const { getVariation, getVisitorId, VarifyExperiment, VarifyProvider, VarifyDebug } = varify;
 ```
+
+`teamId` is your team's public id, a string of letters and digits. It is not the numeric id (`iid`) in the varify.js snippet.
 
 Run its proxy on every page request. It gives each visitor an id and their assignments in a cookie before rendering starts:
 
@@ -117,6 +119,16 @@ export const Cta = () => {
 
 Each experiment is tracked at most once per page (pathname). If a page renders an experiment several times, the first variation counts. The SDK passes exposures to `window.varify.trackServerSide`. Exposures that happen before varify.js has loaded are queued and sent once it loads. Experiments with tracking disabled in Varify are never tracked.
 
+## Your own user ids
+
+`getVisitorId()` returns the id Varify assigns this visitor by, or `null` for bots and pages outside the proxy matcher. Store it next to your own user id, for example on login, to join Varify's assignments with your data later:
+
+```ts
+import { getVisitorId } from '@/varify';
+
+const visitorId = await getVisitorId();
+```
+
 ## Previewing a variation
 
 Add `?varify-force={experimentId}-{variationId}` to any URL, for example `?varify-force=269-311`. Variation `0` forces the original. The forced variation is stored in the cookie, so it sticks for later pages, and it is tracked like any other assignment.
@@ -134,10 +146,10 @@ Add `?varify-force={experimentId}-{variationId}` to any URL, for example `?varif
 
 | Option      | Default                                       | Description                                                                            |
 | ----------- | --------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `teamId`    | required                                      | Your team id from the Varify app                                                       |
+| `teamId`    | required                                      | Your team's public id (not the numeric `iid`)                                          |
 | `timeoutMs` | `300`                                         | How long to wait for the config before showing the original                            |
 | `onError`   | none                                          | Called with a `VarifyError` (`reason`: `timeout`, `network`, `http`, `invalid-config`) |
-| `store`     | `cookieState()`                               | Where the visitor id and assignments live, see below                                   |
+| `cookie`    | see below                                     | Name, domain, `sameSite` and lifetime of the cookie                                    |
 | `isBot`     | user-agent check                              | `(request) => boolean`, to replace the bot detection                                   |
 | `debug`     | on outside production                         | Logs each request's assignments and enables `<VarifyDebug>`                            |
 | `configUrl` | `https://delivery.varify.io/ss/{teamId}.json` | Only for testing against another environment                                           |
@@ -145,29 +157,13 @@ Add `?varify-force={experimentId}-{variationId}` to any URL, for example `?varif
 
 ### Cookie options
 
-```ts
-import { cookieState, createVarify } from '@varify-io/nextjs';
-
-createVarify({
-  teamId: 'your-team-id',
-  store: cookieState({ name: 'varify', domain: '.example.com', sameSite: 'lax', maxAge: 60 * 60 * 24 * 400 }),
-});
-```
-
-Set `domain` to share assignments across subdomains.
-
-### Your own store
-
-To keep assignments with your own user record instead of a cookie, pass an object with `get` and `set`:
+The defaults:
 
 ```ts
 createVarify({
   teamId: 'your-team-id',
-  store: {
-    get: async () => loadVarifyState(await currentUserId()),
-    set: async (state) => saveVarifyState(await currentUserId(), state),
-  },
+  cookie: { name: 'varify', sameSite: 'lax', maxAge: 60 * 60 * 24 * 400 },
 });
 ```
 
-With your own store, the proxy does nothing and assignments are made while rendering, so the bot check does not apply either. `set` is called from Server Components, where Next.js does not allow setting cookies, so it has to write somewhere else, such as a database.
+Set `domain` (for example `'.example.com'`) to share assignments across subdomains.

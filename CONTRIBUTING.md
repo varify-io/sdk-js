@@ -28,7 +28,7 @@ CI also runs betterleaks over the git history and a Trivy secret scan. A merge r
 
 - When two pieces don't fit, change the one that is wrong, usually the producer of the bad value, instead of wrapping it in an adapter, cast or guard. Prefer the fix that deletes code. Don't handle cases no current caller produces.
 - No type assertions in `src`. Fix the type at its source, or narrow with a type guard. Tests are exempt.
-- Input from outside the SDK (the config file, cookies, query parameters, a customer's store) is `unknown` until a guard such as `isConfig` or `parseState` has checked it.
+- Input from outside the SDK (the config file, cookies, query parameters) is `unknown` until a guard such as `isConfig` or `parseState` has checked it.
 - Exports declare their types explicitly; `isolatedDeclarations` enforces it.
 - Public API changes are breaking changes for customers. Add rather than rename.
 - No comments that say what the code does. A comment is for: security reasoning, framework behavior, or an invariant a reader would otherwise "fix" away. Docblocks on public API are fine, since they show up in the editor. Never mention callers, sibling files or ordering, anything an edit elsewhere could make false.

@@ -7,7 +7,6 @@ import {
   parseForceParam,
   type Assignment,
   type Evaluation,
-  type State,
   type VarifyClientOptions,
 } from '@varify-io/core';
 import { cookies } from 'next/headers';
@@ -16,19 +15,12 @@ import { cache, type ReactNode } from 'react';
 
 import { isBotUserAgent } from './bot';
 import { VarifyClientProvider } from './context';
-import { cookieState, decodeState, encodeState, type CookieStateStore } from './cookie';
+import { cookieSettings, decodeState, encodeState, type CookieOptions } from './cookie';
 import { VarifyDebugPanel } from './debug-panel';
 import { VarifyTracking } from './tracking';
 
-/** A store for customers who persist the state themselves, e.g. next to their own user record. */
-export interface StateStore {
-  get(): State | undefined | Promise<State | undefined>;
-  /** Called from Server Components, where Next.js forbids setting cookies; a database is fine. */
-  set(state: State): void | Promise<void>;
-}
-
 export interface CreateVarifyOptions extends VarifyClientOptions {
-  store?: CookieStateStore | StateStore;
+  cookie?: CookieOptions;
   isBot?: (request: NextRequest) => boolean;
   /** Logs every request's assignments. Defaults to on outside production. */
   debug?: boolean;
@@ -39,11 +31,11 @@ export type VarifyExperimentProps = { id: number; children?: ReactNode } & (
   | { original: true; variation?: never }
 );
 
-const isCookieStore = (store: CookieStateStore | StateStore): store is CookieStateStore => 'kind' in store && store.kind === 'cookie';
-
 export interface Varify {
   proxy: (request: NextRequest) => Promise<NextResponse>;
   getVariation: (experimentId: number) => Promise<Assignment>;
+  /** The id Varify buckets this visitor by, e.g. to store next to your own user id. `null` for bots and routes outside the proxy matcher. */
+  getVisitorId: () => Promise<string | null>;
   VarifyExperiment: (props: VarifyExperimentProps) => Promise<ReactNode>;
   VarifyProvider: (props: { children?: ReactNode }) => Promise<ReactNode>;
   VarifyDebug: () => Promise<ReactNode>;
@@ -51,16 +43,16 @@ export interface Varify {
 
 export const createVarify = (options: CreateVarifyOptions): Varify => {
   const client = createVarifyClient(options);
-  const store = options.store ?? cookieState();
+  const cookie = cookieSettings(options.cookie);
   const isBot = options.isBot ?? ((request: NextRequest) => isBotUserAgent(request.headers.get('user-agent')));
   const debug = options.debug ?? process.env.NODE_ENV !== 'production';
 
   const proxy = async (request: NextRequest): Promise<NextResponse> => {
-    if (!isCookieStore(store) || isBot(request)) {
+    if (isBot(request)) {
       return NextResponse.next();
     }
 
-    const current = decodeState(request.cookies.get(store.name)?.value);
+    const current = decodeState(request.cookies.get(cookie.name)?.value);
     const force = parseForceParam(request.nextUrl.searchParams.get(FORCE_PARAM));
     const { state, changed } = evaluate(await client.loadConfig(), current, { force });
     if (!changed) {
@@ -68,32 +60,31 @@ export const createVarify = (options: CreateVarifyOptions): Varify => {
     }
 
     const value = encodeState(state);
-    request.cookies.set(store.name, value);
+    request.cookies.set(cookie.name, value);
     const response = NextResponse.next({ request: { headers: request.headers } });
-    response.cookies.set(store.name, value, {
+    response.cookies.set(cookie.name, value, {
       path: '/',
       httpOnly: true,
       secure: request.nextUrl.protocol === 'https:',
-      sameSite: store.sameSite,
-      maxAge: store.maxAge,
-      ...(store.domain === undefined ? {} : { domain: store.domain }),
+      sameSite: cookie.sameSite,
+      maxAge: cookie.maxAge,
+      ...(cookie.domain === undefined ? {} : { domain: cookie.domain }),
     });
     // A CDN must never hand this visitor's id to anyone else.
     response.headers.set('cache-control', 'private, no-store');
     return response;
   };
 
+  const getState = cache(async () => decodeState((await cookies()).get(cookie.name)?.value));
+
   const getEvaluation = cache(async (): Promise<Evaluation | null> => {
-    const state = isCookieStore(store) ? decodeState((await cookies()).get(store.name)?.value) : await store.get();
+    const state = await getState();
     // Without an id from the proxy (bots, or a route outside its matcher) a fresh id would change on every request.
-    if (state === undefined && isCookieStore(store)) {
+    if (state === undefined) {
       return null;
     }
 
     const evaluation = evaluate(await client.loadConfig(), state);
-    if (!isCookieStore(store) && evaluation.changed) {
-      await store.set(evaluation.state);
-    }
     if (debug) {
       console.debug(
         '[varify]',
@@ -109,6 +100,8 @@ export const createVarify = (options: CreateVarifyOptions): Varify => {
     const evaluation = await getEvaluation();
     return evaluation === null ? fallbackAssignment(experimentId) : getAssignment(evaluation, experimentId);
   };
+
+  const getVisitorId = async (): Promise<string | null> => (await getState())?.uid ?? null;
 
   const VarifyExperiment = async ({ id, variation, original, children }: VarifyExperimentProps): Promise<ReactNode> => {
     const assignment = await getVariation(id);
@@ -130,9 +123,8 @@ export const createVarify = (options: CreateVarifyOptions): Varify => {
     if (!debug) {
       return null;
     }
-    const evaluation = await getEvaluation();
-    return <VarifyDebugPanel uid={evaluation?.state.uid ?? null} />;
+    return <VarifyDebugPanel uid={await getVisitorId()} />;
   };
 
-  return { proxy, getVariation, VarifyExperiment, VarifyProvider, VarifyDebug };
+  return { proxy, getVariation, getVisitorId, VarifyExperiment, VarifyProvider, VarifyDebug };
 };

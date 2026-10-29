@@ -1,7 +1,8 @@
-import { EXPERIMENT_ID, getVariation, VARIATION_ID, VarifyExperiment } from '@/varify';
+import { EXPERIMENT_ID, getVariation, getVisitorId, VARIATION_ID, VarifyExperiment } from '@/varify';
 
 export default async function ServerPage() {
   const { variation } = await getVariation(EXPERIMENT_ID);
+  const visitorId = await getVisitorId();
 
   return (
     <main>
@@ -15,6 +16,7 @@ export default async function ServerPage() {
       <p>
         getVariation({EXPERIMENT_ID}) → {variation ?? 'original'}
       </p>
+      <p>getVisitorId() → {visitorId ?? 'null'}</p>
     </main>
   );
 }

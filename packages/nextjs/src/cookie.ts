@@ -1,6 +1,6 @@
 import { parseState, type State } from '@varify-io/core';
 
-export interface CookieStateOptions {
+export interface CookieOptions {
   name?: string;
   /** Seconds. Defaults to 400 days, the maximum browsers accept. */
   maxAge?: number;
@@ -8,13 +8,11 @@ export interface CookieStateOptions {
   sameSite?: 'lax' | 'strict' | 'none';
 }
 
-export interface CookieStateStore extends Required<Omit<CookieStateOptions, 'domain'>> {
-  kind: 'cookie';
+export interface CookieSettings extends Required<Omit<CookieOptions, 'domain'>> {
   domain: string | undefined;
 }
 
-export const cookieState = (options: CookieStateOptions = {}): CookieStateStore => ({
-  kind: 'cookie',
+export const cookieSettings = (options: CookieOptions = {}): CookieSettings => ({
   name: options.name ?? 'varify',
   maxAge: options.maxAge ?? 60 * 60 * 24 * 400,
   domain: options.domain,

@@ -6,7 +6,7 @@ export const varify = createVarify({
   onError: (error) => console.warn('[varify]', error.reason, error.message),
 });
 
-export const { VarifyExperiment, VarifyProvider, VarifyDebug, getVariation } = varify;
+export const { VarifyExperiment, VarifyProvider, VarifyDebug, getVariation, getVisitorId } = varify;
 
 export const EXPERIMENT_ID = Number(process.env.VARIFY_EXPERIMENT_ID ?? 269);
 export const VARIATION_ID = Number(process.env.VARIFY_VARIATION_ID ?? 311);

@@ -41,6 +41,19 @@ describe('proxy', () => {
     expect(response.cookies.get('varify')).toMatchObject({ httpOnly: true, sameSite: 'lax', maxAge: 34_560_000, path: '/', secure: true });
   });
 
+  it('applies the cookie options', async () => {
+    const varify = createVarify({
+      teamId: 'KBYQpQERndt9fr',
+      fetch: configFetch(),
+      debug: false,
+      cookie: { name: 'ab', domain: '.shop.example', sameSite: 'strict', maxAge: 60 },
+    });
+
+    const response = await varify.proxy(request());
+
+    expect(response.cookies.get('ab')).toMatchObject({ domain: '.shop.example', sameSite: 'strict', maxAge: 60 });
+  });
+
   it('leaves a returning visitor untouched', async () => {
     const response = await varifyWith().proxy(request(undefined, { cookie: `varify=${UID}.48812-48838` }));
 

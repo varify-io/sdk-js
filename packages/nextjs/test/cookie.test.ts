@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { cookieState, decodeState, encodeState } from '../src/cookie';
+import { cookieSettings, decodeState, encodeState } from '../src/cookie';
 
 const UID = '3f2a9c1e-5b7d-4e8a-9c21-7d4e5f6a8b90';
 
@@ -27,6 +27,6 @@ describe('cookie state', () => {
   });
 
   it('defaults to a 400-day lax cookie named varify', () => {
-    expect(cookieState()).toEqual({ kind: 'cookie', name: 'varify', maxAge: 34_560_000, domain: undefined, sameSite: 'lax' });
+    expect(cookieSettings()).toEqual({ name: 'varify', maxAge: 34_560_000, domain: undefined, sameSite: 'lax' });
   });
 });
