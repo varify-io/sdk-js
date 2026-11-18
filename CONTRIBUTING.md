@@ -48,7 +48,7 @@ The bump comes from the commit types: `feat` is minor, `fix`, `perf`, `update` a
 
 Commit messages become the public changelog customers read, so write the subject for them.
 
-Staged packages are not installable yet. A maintainer with publish rights on `@varify-io` approves each one with 2FA, on npmjs.com under Staged Packages or with `npm stage approve <stageId>`. The job log lists the stage ids.
+Staged packages are not installable yet. A maintainer with publish rights on `@varify-io` approves each one with 2FA, at `https://www.npmjs.com/settings/<npm username>/staged-packages` or with `npm stage approve <stageId> --otp=<code>`. The job log lists the stage ids. It also logs `ENEEDAUTH Access verification failed`: the stage-only token can't read the npm username, which only costs lerna-lite its approval link.
 
 If the job fails after the release commit was pushed, don't rerun it: it would check out the commit before the release again, and its push fails. Check out the release commit and run `pnpm build && pnpm exec lerna publish from-package` with your own npm login. It only uploads versions npm doesn't have yet.
 
