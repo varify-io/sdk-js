@@ -1,6 +1,6 @@
 {
   "name": "@varify-io/nextjs",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Varify server-side A/B testing for Next.js App Router.",
   "homepage": "https://gitlab.com/varify/varify-sdk-js/-/tree/main/packages/nextjs#readme",
   "bugs": "https://gitlab.com/varify/varify-sdk-js/-/issues",

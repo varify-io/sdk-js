@@ -1,6 +1,6 @@
 {
   "name": "@varify-io/core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Framework-agnostic core of the Varify server-side SDK: local evaluation, sticky assignments, config loading.",
   "homepage": "https://gitlab.com/varify/varify-sdk-js/-/tree/main/packages/core#readme",
   "bugs": "https://gitlab.com/varify/varify-sdk-js/-/issues",
