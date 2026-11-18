@@ -5,6 +5,7 @@ workflow:
 stages:
   - prepare
   - test
+  - release
 
 variables:
   # renovate: datasource=docker depName=ghcr.io/aquasecurity/trivy
@@ -104,3 +105,38 @@ trivy-secrets:
       --secret-config .trivy/secret-config.yaml
       --table-mode detailed
       .
+
+release:
+  stage: release
+  cache: *node-cache
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  needs:
+    - test:lint
+    - test:typecheck
+    - test:unit
+    - test:package
+    - test:audit
+    - betterleaks
+    - trivy-secrets
+  resource_group: release
+  # Cancelling between the version push and the npm upload leaves tags without packages.
+  interruptible: false
+  variables:
+    # lerna derives each package's bump from the commits since its last tag.
+    GIT_DEPTH: 0
+    HUSKY: 0
+    GL_TOKEN: $GITLAB_TOKEN
+  before_script:
+    - apk add --no-cache git
+    - corepack enable pnpm
+    - pnpm install --offline --frozen-lockfile
+  script:
+    - git checkout -B "$CI_COMMIT_BRANCH" "$CI_COMMIT_SHA"
+    - git remote set-url origin "https://release:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
+    - git config user.name "$GITLAB_USER_NAME"
+    - git config user.email "$GITLAB_USER_EMAIL"
+    - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > ~/.npmrc
+    - pnpm build
+    - pnpm exec lerna version --yes
+    - pnpm exec lerna publish from-package --yes

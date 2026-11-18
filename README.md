@@ -27,7 +27,6 @@ pnpm build
 | `pnpm typecheck`        | `tsc` in every package                               |
 | `pnpm lint`             | oxlint + oxfmt check; `pnpm format` fixes formatting |
 | `pnpm check:package`    | publint + arethetypeswrong on the built packages     |
-| `pnpm changeset`        | Records a version bump for the next release          |
 | `pnpm renovate:dry-run` | Lists available dependency updates (needs Docker)    |
 | `pnpm renovate`         | Applies them to the working tree                     |
 

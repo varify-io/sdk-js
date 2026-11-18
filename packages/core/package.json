@@ -2,7 +2,14 @@
   "name": "@varify-io/core",
   "version": "0.0.0",
   "description": "Framework-agnostic core of the Varify server-side SDK: local evaluation, sticky assignments, config loading.",
-  "license": "UNLICENSED",
+  "homepage": "https://gitlab.com/varify/varify-sdk-js/-/tree/main/packages/core#readme",
+  "bugs": "https://gitlab.com/varify/varify-sdk-js/-/issues",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/varify/varify-sdk-js.git",
+    "directory": "packages/core"
+  },
   "files": [
     "dist",
     "src"
@@ -24,6 +31,9 @@
       }
     },
     "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "tsdown",

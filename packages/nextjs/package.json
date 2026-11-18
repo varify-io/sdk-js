@@ -2,7 +2,14 @@
   "name": "@varify-io/nextjs",
   "version": "0.0.0",
   "description": "Varify server-side A/B testing for Next.js App Router.",
-  "license": "UNLICENSED",
+  "homepage": "https://gitlab.com/varify/varify-sdk-js/-/tree/main/packages/nextjs#readme",
+  "bugs": "https://gitlab.com/varify/varify-sdk-js/-/issues",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/varify/varify-sdk-js.git",
+    "directory": "packages/nextjs"
+  },
   "files": [
     "dist",
     "src"
@@ -24,6 +31,9 @@
     },
     "./package.json": "./package.json"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsdown",
     "test": "vitest run",
@@ -31,7 +41,7 @@
     "check:package": "publint && attw --pack . --profile esm-only && api-extractor run --local && api-extractor run --local -c api-extractor.client.json"
   },
   "dependencies": {
-    "@varify-io/core": "workspace:*"
+    "@varify-io/core": "workspace:^"
   },
   "devDependencies": {
     "@types/react": "^19.3.0",
