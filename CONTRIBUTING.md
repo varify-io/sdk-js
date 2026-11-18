@@ -9,7 +9,7 @@ pnpm lint            # oxlint + oxfmt --check; pnpm format fixes formatting
 pnpm typecheck
 pnpm test
 pnpm check:package   # publint + arethetypeswrong on the built packages
-pnpm audit
+pnpm audit --prod    # blocks a release; plain pnpm audit also runs, without blocking
 ```
 
 CI also runs betterleaks over the git history and a Trivy secret scan. A merge request can only merge with a green pipeline.

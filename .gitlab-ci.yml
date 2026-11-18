@@ -70,6 +70,14 @@ test:audit:
   stage: test
   cache: *node-cache
   script:
+    - pnpm audit --prod
+
+# Dev tooling never reaches customers, so its advisories are reported without blocking a release.
+test:audit:dev:
+  stage: test
+  cache: *node-cache
+  allow_failure: true
+  script:
     - pnpm audit
 
 betterleaks:
