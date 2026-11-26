@@ -3,7 +3,7 @@
   "assignAutomerge": true,
   "minimumReleaseAge": "5 days",
   "pinDigests": true,
-  "extends": [":prConcurrentLimit10", "customManagers:githubActionsVersions"],
+  "extends": [":prConcurrentLimit10", ":semanticPrefixFixDepsChoreOthers", "customManagers:githubActionsVersions"],
   "rebaseWhen": "conflicted",
   "packageRules": [
     {
