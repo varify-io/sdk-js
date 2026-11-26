@@ -12,7 +12,7 @@ pnpm check:package   # publint + arethetypeswrong on the built packages
 pnpm audit --prod    # blocks a release; plain pnpm audit also runs, without blocking
 ```
 
-CI also runs betterleaks over the git history and a Trivy secret scan. A merge request can only merge with a green pipeline.
+CI also runs betterleaks over the git history and a Trivy secret scan. A pull request can only merge with green checks.
 
 ## Rules that are not up for negotiation
 
@@ -42,25 +42,25 @@ For anything that runs in the browser or in the proxy, check it in the example a
 
 ## Releases
 
-A merge into `main` releases. The `release` job runs lerna-lite: it bumps every package whose files changed since its last tag, writes its `CHANGELOG.md`, commits `chore(release): publish [skip ci]`, tags `@varify-io/<package>@<version>`, creates the GitLab release and stages the packages on npm. Nobody edits a version by hand.
+A merge into `main` releases. The `release` job runs lerna-lite: it bumps every package whose files changed since its last tag, writes its `CHANGELOG.md`, commits `chore(release): publish [skip ci]`, tags `@varify-io/<package>@<version>`, creates the GitHub release and stages the packages on npm. npm accepts the upload through trusted publishing: the job proves with GitHub's OIDC token that it runs in this repository's `ci.yml`, so there is no npm token, and every version carries a provenance attestation. Nobody edits a version by hand.
 
 The bump comes from the commit types: `feat` is minor, `fix`, `perf`, `update` and everything else is patch, and a breaking change (`feat!:` or a `BREAKING CHANGE:` footer) is major. Before 1.0, a breaking change is minor. Changes to tests and build config alone don't release a package.
 
 Commit messages become the public changelog customers read, so write the subject for them.
 
-Staged packages are not installable yet. A maintainer with publish rights on `@varify-io` approves each one with 2FA, at `https://www.npmjs.com/settings/<npm username>/staged-packages` or with `npm stage approve <stageId> --otp=<code>`. The job log lists the stage ids. It also logs `ENEEDAUTH Access verification failed`: the stage-only token can't read the npm username, which only costs lerna-lite its approval link.
+Staged packages are not installable yet. A maintainer with publish rights on `@varify-io` approves each one with 2FA, at `https://www.npmjs.com/settings/<npm username>/staged-packages` or with `npm stage approve <stageId> --otp=<code>`. The job log lists the stage ids.
 
 If the job fails after the release commit was pushed, don't rerun it: it would check out the commit before the release again, and its push fails. Check out the release commit and run `pnpm build && pnpm exec lerna publish from-package` with your own npm login. It only uploads versions npm doesn't have yet.
 
 ## Branches
 
-Work on a branch off `develop` and finish it through a merge request into `develop`. `main` is the release branch. Never merge into `develop` or `main` locally.
+Work on a branch off `develop` and finish it through a pull request into `develop`. `main` is the release branch. Never merge into `develop` or `main` locally.
 
 ## Commits
 
 Conventional commits, enforced by commitlint on a `commit-msg` hook. Allowed types: `build`, `chore`, `docs`, `feat`, `fix`, `perf`, `refactor`, `release`, `style`, `test`, `update`. Body lines can be at most 100 characters.
 
-Write the message as the change, nothing else: no tool attribution, no generated-by footers. The body, when there is one, explains _why_; the diff already shows what changed. The same goes for merge request descriptions.
+Write the message as the change, nothing else: no tool attribution, no generated-by footers. The body, when there is one, explains _why_; the diff already shows what changed. The same goes for pull request descriptions.
 
 ## Dependencies
 

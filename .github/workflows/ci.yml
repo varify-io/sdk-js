@@ -1,0 +1,136 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  # Cancelling between the version push and the npm upload leaves tags without packages.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  # renovate: datasource=docker depName=ghcr.io/aquasecurity/trivy
+  TRIVY_VERSION: 0.74.0
+  # renovate: datasource=docker depName=ghcr.io/betterleaks/betterleaks
+  BETTERLEAKS_VERSION: 1.8.1
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-node
+      - run: pnpm lint
+
+  typecheck:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-node
+      - run: pnpm typecheck
+
+  unit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-node
+      - run: pnpm test
+
+  package:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-node
+      - run: pnpm check:package
+
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-node
+      - run: pnpm audit --prod
+
+  # Dev tooling never reaches customers, so its advisories are reported without blocking a release.
+  audit-dev:
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-node
+      - run: pnpm audit
+
+  betterleaks:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      # Same user as the checkout, or git refuses the repository as having dubious ownership.
+      - run: >
+          docker run --rm -v "$PWD:/repo" -w /repo --user "$(id -u):$(id -g)"
+          "ghcr.io/betterleaks/betterleaks:v$BETTERLEAKS_VERSION"
+          git . --no-banner -v --redact=100 --log-opts=HEAD
+
+  trivy-secrets:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .tools/cache/trivy
+          key: trivy-db-${{ env.TRIVY_VERSION }}
+      - run: >
+          docker run --rm -v "$PWD:/repo" -w /repo
+          -e TRIVY_CACHE_DIR=/repo/.tools/cache/trivy -e TRIVY_NO_PROGRESS=true
+          "ghcr.io/aquasecurity/trivy:$TRIVY_VERSION"
+          filesystem --scanners secret
+          --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+          --secret-config .trivy/secret-config.yaml
+          --table-mode detailed
+          .
+
+  release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [lint, typecheck, unit, package, audit, betterleaks, trivy-secrets]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      # npm trusted publishing: lerna-lite trades the OIDC token for a publish token and signs provenance.
+      id-token: write
+    env:
+      HUSKY: 0
+    steps:
+      # The deploy key may bypass the branch ruleset to push the release commit to main.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ssh-key: ${{ secrets.RELEASE_DEPLOY_KEY }}
+      - uses: ./.github/actions/setup-node
+      - run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR_ID+$GITHUB_ACTOR@users.noreply.github.com"
+      - run: pnpm build
+      - run: pnpm exec lerna version --yes
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - run: pnpm exec lerna publish from-package --yes
