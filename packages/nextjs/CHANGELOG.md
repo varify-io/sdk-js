@@ -7,23 +7,23 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
-* add @varify-io/nextjs with example app ([d87a9f4](https://gitlab.com/varify/varify-sdk-js/-/commit/d87a9f45d893c46332cb1bd855ef2d7935c6a1f0))
-* **nextjs:** replace the custom state store with getVisitorId ([ee1462d](https://gitlab.com/varify/varify-sdk-js/-/commit/ee1462d7c61f2f05d005a3b4c8181b10fdafeb10))
+* add @varify-io/nextjs with example app ([650bba1](https://github.com/varify-io/sdk-js/commit/650bba14fafd6c12a69113f97bea0ad92cae44e9))
+* **nextjs:** replace the custom state store with getVisitorId ([41c2bd4](https://github.com/varify-io/sdk-js/commit/41c2bd4fec27ec27912ad9957556b29c18c16c84))
 
 ### Bug Fixes
 
-* **deps:** update next to 16.4.6 ([1939021](https://gitlab.com/varify/varify-sdk-js/-/commit/1939021c89abbd3391f7c92e30169ae5eb175da6))
-* **nextjs:** track one exposure per experiment per pathname ([7c96661](https://gitlab.com/varify/varify-sdk-js/-/commit/7c96661c942d7439053f33ec8cbe3987fe2b6036))
+* **deps:** update next to 16.4.6 ([1aac4d4](https://github.com/varify-io/sdk-js/commit/1aac4d4662f094de6c44b4edb3aa114b9cd26774))
+* **nextjs:** track one exposure per experiment per pathname ([cd33ee2](https://github.com/varify-io/sdk-js/commit/cd33ee288f41049dd61af988a9d7078229ffba1e))
 
 ### Build
 
-* check that every public type is exported ([4aded5b](https://gitlab.com/varify/varify-sdk-js/-/commit/4aded5bc4b682130972a15b9036ce9e2588b4540))
-* forbid type assertions outside tests ([ef357db](https://gitlab.com/varify/varify-sdk-js/-/commit/ef357dbf35e8af22912b1a5d0ba8c74705ec1677))
-* release with lerna-lite ([4c1f6d7](https://gitlab.com/varify/varify-sdk-js/-/commit/4c1f6d7c4d7c8be063b28049c514a6b58da0a027))
-* ship declaration maps and sources ([7c659ae](https://gitlab.com/varify/varify-sdk-js/-/commit/7c659ae653ae464357f74a7c9172d71ce3fad423))
+* check that every public type is exported ([7e17a6f](https://github.com/varify-io/sdk-js/commit/7e17a6f220fe64a86c3c291a98d6c04e67fca180))
+* forbid type assertions outside tests ([5632d33](https://github.com/varify-io/sdk-js/commit/5632d330e8d537473e016c0113d803a1782ef45e))
+* release with lerna-lite ([34c564e](https://github.com/varify-io/sdk-js/commit/34c564e77f1da9deb3af91d5697866b3511d53cb))
+* ship declaration maps and sources ([0cacb4b](https://github.com/varify-io/sdk-js/commit/0cacb4b24051b02f77ecb65dbfe0d5d7403c5de1))
 
 ### Docs
 
-* add user docs, contributing, architecture and agent instructions ([e34cfbb](https://gitlab.com/varify/varify-sdk-js/-/commit/e34cfbbf6e7fd957358b404ace933e9e66d3b1d3))
-* **core:** document client and evaluate options and self-hosting the config ([6ec8807](https://gitlab.com/varify/varify-sdk-js/-/commit/6ec8807817be83f0feb49616ad46432cf4a4e2fa))
-* license the packages under MIT ([cf66c93](https://gitlab.com/varify/varify-sdk-js/-/commit/cf66c93e606ba1e5dfb1b6b3bc7e746c6abdf4cb))
+* add user docs, contributing, architecture and agent instructions ([38cda81](https://github.com/varify-io/sdk-js/commit/38cda81346b8d18bd7bb508d76c17e46cf3c6f51))
+* **core:** document client and evaluate options and self-hosting the config ([da10a2a](https://github.com/varify-io/sdk-js/commit/da10a2ab0194a483d6e725c8e31cd6bc9cd3d1bb))
+* license the packages under MIT ([60ee210](https://github.com/varify-io/sdk-js/commit/60ee210ee90d2cbb8ef9680ec488825db40a2491))

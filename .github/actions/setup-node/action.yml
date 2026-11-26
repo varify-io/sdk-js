@@ -1,0 +1,27 @@
+name: Set up Node
+description: Node from .nvmrc, pnpm from package.json, and the dependencies installed.
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version-file: .nvmrc
+
+    - shell: bash
+      run: |
+        corepack enable pnpm
+        echo "pnpm_config_store_dir=$RUNNER_TEMP/pnpm-store" >> "$GITHUB_ENV"
+        # Holds the registry metadata pnpm's supply-chain check reads.
+        echo "pnpm_config_cache_dir=$RUNNER_TEMP/pnpm-cache" >> "$GITHUB_ENV"
+
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: |
+          ${{ runner.temp }}/pnpm-store
+          ${{ runner.temp }}/pnpm-cache
+        key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+        restore-keys: pnpm-${{ runner.os }}-
+
+    - shell: bash
+      run: pnpm install --frozen-lockfile
