@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.1](https://github.com/varify-io/sdk-js/compare/%40varify-io%2Fcore%400.1.0...%40varify-io%2Fcore%400.1.1) (2026-11-26)
+
+### Build
+
+* move the repository to GitHub ([a9ebf68](https://github.com/varify-io/sdk-js/commit/a9ebf68fa7e92ffa3334a1f9b7c4b1e3a36c80fe))
+
 ## 0.1.0 (2026-11-18)
 
 * scaffold monorepo with @varify-io/core ([91301ae](https://github.com/varify-io/sdk-js/commit/91301ae1474dae4c56bfe2ead215d1c924408834))
