@@ -76,4 +76,4 @@ Write the message as the change, nothing else: no tool attribution, no generated
 
 ## Dependencies
 
-Renovate isn't running automatically yet. `pnpm renovate:dry-run` lists available updates, and `pnpm renovate` applies them to the working tree (both need Docker). New releases wait 5 days, devDependencies are pinned, and published dependencies keep ranges so customers can dedupe.
+Renovate opens pull requests into `develop` every two hours, run from [varify-io/renovate](https://github.com/varify-io/renovate); the Dependency Dashboard issue lists what is pending, and majors wait there for approval. `pnpm renovate:dry-run` lists available updates locally, and `pnpm renovate` applies them to the working tree (both need Docker). New releases wait 5 days, devDependencies are pinned, and published dependencies keep ranges so customers can dedupe.
