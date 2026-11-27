@@ -17,20 +17,20 @@
     "@arethetypeswrong/cli": "0.18.5",
     "@commitlint/cli": "21.2.4",
     "@commitlint/config-conventional": "21.2.4",
-    "@lerna-lite/cli": "5.8.0",
-    "@lerna-lite/publish": "5.8.0",
-    "@lerna-lite/version": "5.8.0",
-    "@microsoft/api-extractor": "7.59.4",
+    "@lerna-lite/cli": "5.9.0",
+    "@lerna-lite/publish": "5.9.0",
+    "@lerna-lite/version": "5.9.0",
+    "@microsoft/api-extractor": "7.60.1",
     "@types/node": "24.19.2",
     "conventional-changelog-conventionalcommits": "10.4.1",
     "husky": "9.1.7",
-    "oxfmt": "0.74.0",
-    "oxlint": "1.89.0",
+    "oxfmt": "0.79.0",
+    "oxlint": "1.94.0",
     "publint": "0.3.25",
-    "tsdown": "0.23.2",
-    "turbo": "2.11.10",
+    "tsdown": "0.23.7",
+    "turbo": "2.11.13",
     "typescript": "7.0.2",
-    "vitest": "5.0.5"
+    "vitest": "5.1.1"
   },
-  "packageManager": "pnpm@12.15.0+sha512.b3951d6d6ff4a9f13dc7cf56cd28d2b8eb37dbcc9c68e52e1e1191873ea9f82a017287ab50baadc5ccc494f036c67c0e47eb13608c2fa36f47711b61ea128e61"
+  "packageManager": "pnpm@12.23.0+sha512.02da94ffaf133f46074322afe552f90d40b5f71ae259aefbccdacc5085b1d617e98d65e0131f5748b9b67445978ee5055d7d59a473f1eef0d504854fefcd5975"
 }
